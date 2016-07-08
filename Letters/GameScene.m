@@ -22,8 +22,9 @@
     
     self.backgroundColor = [SKColor whiteColor];
     
-    self.grid = [[LetterGrid alloc] initWithSize:CGSizeMake(self.size.width * 0.85,
-                                                            self.size.width * 0.85 * (4.0 / 3.0))];
+    const CGFloat gridWidth = self.size.width * 0.85;
+    const CGFloat gridHeight = gridWidth * (4.0 / 3.0);
+    self.grid = [[LetterGrid alloc] initWithSize:CGSizeMake(gridWidth, gridHeight)];
     self.grid.gridNode.position = CGPointMake(CGRectGetMidX(self.frame), CGRectGetMidY(self.frame));
     
     [self addChild:self.grid.gridNode];
