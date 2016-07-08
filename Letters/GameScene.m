@@ -7,42 +7,50 @@
 //
 
 #import "GameScene.h"
+#import "LetterGrid.h"
+
+@interface GameScene ()
+
+@property LetterGrid *grid;
+
+@end
 
 @implementation GameScene
 
--(void)didMoveToView:(SKView *)view {
+- (void)didMoveToView:(SKView *)view {
     /* Setup your scene here */
-    SKLabelNode *myLabel = [SKLabelNode labelNodeWithFontNamed:@"Chalkduster"];
     
-    myLabel.text = @"Hello, World!";
-    myLabel.fontSize = 45;
-    myLabel.position = CGPointMake(CGRectGetMidX(self.frame),
-                                   CGRectGetMidY(self.frame));
+    self.backgroundColor = [SKColor whiteColor];
     
-    [self addChild:myLabel];
+    self.grid = [[LetterGrid alloc] initWithSize:CGSizeMake(414.0f, 552.0f)];
+    self.grid.gridNode.position = CGPointMake(CGRectGetMidX(self.frame), CGRectGetMidY(self.frame));
+    
+    [self addChild:self.grid.gridNode];
 }
 
--(void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
+- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
     /* Called when a touch begins */
     
     for (UITouch *touch in touches) {
-        CGPoint location = [touch locationInNode:self];
-        
-        SKSpriteNode *sprite = [SKSpriteNode spriteNodeWithImageNamed:@"Spaceship"];
-        
-        sprite.xScale = 0.5;
-        sprite.yScale = 0.5;
-        sprite.position = location;
-        
-        SKAction *action = [SKAction rotateByAngle:M_PI duration:1];
-        
-        [sprite runAction:[SKAction repeatActionForever:action]];
-        
-        [self addChild:sprite];
+        [self.grid setActivePosition:[touch locationInNode:self.grid.gridNode]];
     }
 }
 
--(void)update:(CFTimeInterval)currentTime {
+- (void)touchesEnded:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
+    /* Called when a touch ends */
+    
+    [self.grid resetActivePosition];
+}
+
+- (void)touchesMoved:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
+    /* Called when a touch moves */
+    
+    for (UITouch *touch in touches) {
+        [self.grid slideTo:[touch locationInNode:self.grid.gridNode]];
+    }
+}
+
+- (void)update:(CFTimeInterval)currentTime {
     /* Called before each frame is rendered */
 }
 

@@ -17,6 +17,8 @@
 		B1B648E51D2B45690003BCE7 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B1B648E31D2B45690003BCE7 /* LaunchScreen.storyboard */; };
 		B1B648F01D2B45690003BCE7 /* LettersTests.m in Sources */ = {isa = PBXBuildFile; fileRef = B1B648EF1D2B45690003BCE7 /* LettersTests.m */; };
 		B1B648FB1D2B45690003BCE7 /* LettersUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = B1B648FA1D2B45690003BCE7 /* LettersUITests.m */; };
+		B1B6490A1D2B45990003BCE7 /* LetterTile.m in Sources */ = {isa = PBXBuildFile; fileRef = B1B649091D2B45990003BCE7 /* LetterTile.m */; };
+		B1B6490D1D2B45A50003BCE7 /* LetterGrid.m in Sources */ = {isa = PBXBuildFile; fileRef = B1B6490C1D2B45A50003BCE7 /* LetterGrid.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -56,6 +58,10 @@
 		B1B648F61D2B45690003BCE7 /* LettersUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = LettersUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		B1B648FA1D2B45690003BCE7 /* LettersUITests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LettersUITests.m; sourceTree = "<group>"; };
 		B1B648FC1D2B45690003BCE7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		B1B649081D2B45990003BCE7 /* LetterTile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LetterTile.h; sourceTree = "<group>"; };
+		B1B649091D2B45990003BCE7 /* LetterTile.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LetterTile.m; sourceTree = "<group>"; };
+		B1B6490B1D2B45A50003BCE7 /* LetterGrid.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LetterGrid.h; sourceTree = "<group>"; };
+		B1B6490C1D2B45A50003BCE7 /* LetterGrid.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LetterGrid.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -113,10 +119,14 @@
 				B1B648D91D2B45690003BCE7 /* GameScene.sks */,
 				B1B648DB1D2B45690003BCE7 /* GameViewController.h */,
 				B1B648DC1D2B45690003BCE7 /* GameViewController.m */,
+				B1B6490B1D2B45A50003BCE7 /* LetterGrid.h */,
+				B1B6490C1D2B45A50003BCE7 /* LetterGrid.m */,
+				B1B649081D2B45990003BCE7 /* LetterTile.h */,
+				B1B649091D2B45990003BCE7 /* LetterTile.m */,
+				B1B648E61D2B45690003BCE7 /* Info.plist */,
+				B1B648E31D2B45690003BCE7 /* LaunchScreen.storyboard */,
 				B1B648DE1D2B45690003BCE7 /* Main.storyboard */,
 				B1B648E11D2B45690003BCE7 /* Assets.xcassets */,
-				B1B648E31D2B45690003BCE7 /* LaunchScreen.storyboard */,
-				B1B648E61D2B45690003BCE7 /* Info.plist */,
 				B1B648D01D2B45690003BCE7 /* Supporting Files */,
 			);
 			path = Letters;
@@ -215,6 +225,7 @@
 				TargetAttributes = {
 					B1B648CC1D2B45690003BCE7 = {
 						CreatedOnToolsVersion = 7.3.1;
+						DevelopmentTeam = 7E267VMMW7;
 					};
 					B1B648EA1D2B45690003BCE7 = {
 						CreatedOnToolsVersion = 7.3.1;
@@ -280,9 +291,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				B1B648DD1D2B45690003BCE7 /* GameViewController.m in Sources */,
+				B1B6490A1D2B45990003BCE7 /* LetterTile.m in Sources */,
 				B1B648D51D2B45690003BCE7 /* AppDelegate.m in Sources */,
 				B1B648D81D2B45690003BCE7 /* GameScene.m in Sources */,
 				B1B648D21D2B45690003BCE7 /* main.m in Sources */,
+				B1B6490D1D2B45A50003BCE7 /* LetterGrid.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -425,10 +438,13 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				INFOPLIST_FILE = Letters/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = ca.intmainvoid.Letters;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 			};
 			name = Debug;
 		};
@@ -436,10 +452,13 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				INFOPLIST_FILE = Letters/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = ca.intmainvoid.Letters;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 			};
 			name = Release;
 		};
@@ -510,6 +529,7 @@
 				B1B649011D2B45690003BCE7 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		B1B649021D2B45690003BCE7 /* Build configuration list for PBXNativeTarget "LettersTests" */ = {
 			isa = XCConfigurationList;
@@ -518,6 +538,7 @@
 				B1B649041D2B45690003BCE7 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		B1B649051D2B45690003BCE7 /* Build configuration list for PBXNativeTarget "LettersUITests" */ = {
 			isa = XCConfigurationList;
@@ -526,6 +547,7 @@
 				B1B649071D2B45690003BCE7 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
