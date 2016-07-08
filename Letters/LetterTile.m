@@ -8,7 +8,7 @@
 
 #import "LetterTile.h"
 
-static const CGFloat defaultTileBorderRadius = 16.0;
+static const CGFloat tileBorderRadius = 16.0;
 
 @implementation LetterTile
 
@@ -16,18 +16,20 @@ static const CGFloat defaultTileBorderRadius = 16.0;
     self = [super init];
     if (!self) return nil;
     
-    // Set origin points to width or height multiplied by -0.5 so position property points to center
-    SKShapeNode *tileNode = [SKShapeNode shapeNodeWithRect:CGRectMake(size.width * -0.5,
-                                                                      size.height * -0.5,
+    // Set origin points to width or height multiplied by -0.5 so that the position property points to center
+    SKShapeNode *tileNode = [SKShapeNode shapeNodeWithRect:CGRectMake(0,//size.width * -0.5,
+                                                                      0,//size.height * -0.5,
                                                                       size.width,
                                                                       size.height)
-                                              cornerRadius:defaultTileBorderRadius];
+                                              cornerRadius:tileBorderRadius];
     
     // TODO: Prettify tiles
     tileNode.fillColor = [SKColor whiteColor];
     tileNode.strokeColor = [SKColor blackColor];
     
     SKLabelNode *letterNode = [SKLabelNode labelNodeWithText:[NSString stringWithFormat:@"%c", letter]];
+    letterNode.position = CGPointMake(letterNode.position.x + size.width / 2,
+                                      letterNode.position.y + size.height / 2);
     letterNode.verticalAlignmentMode = SKLabelVerticalAlignmentModeCenter;
     letterNode.fontSize = size.width;
     
@@ -37,6 +39,7 @@ static const CGFloat defaultTileBorderRadius = 16.0;
     [tileNode addChild:letterNode];
     
     _tileNode = tileNode;
+    _letterNode = letterNode;
     
     return self;
 }

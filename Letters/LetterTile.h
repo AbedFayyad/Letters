@@ -12,6 +12,7 @@
 @interface LetterTile : NSObject
 
 @property (readonly) SKShapeNode *tileNode;
+@property (readonly) SKLabelNode *letterNode;
 
 - (LetterTile *)initWithSize:(const CGSize)size andChar:(const char)letter;
 

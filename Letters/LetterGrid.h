@@ -15,8 +15,4 @@
 
 - (LetterGrid *)initWithSize:(const CGSize)size;
 
-- (void)slideTo:(CGPoint)position;
-- (void)setActivePosition:(CGPoint)position;
-- (void)resetActivePosition;
-
 @end
