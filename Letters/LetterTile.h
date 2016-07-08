@@ -14,7 +14,5 @@
 @property (readonly) SKShapeNode *tileNode;
 
 - (LetterTile *)initWithSize:(const CGSize)size andChar:(const char)letter;
-- (LetterTile *)initWithChar:(const char)letter;
-- (LetterTile *)init;
 
 @end
