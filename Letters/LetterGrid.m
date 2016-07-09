@@ -22,6 +22,8 @@ static const CGFloat tileHeightMultiplier = (1.0 - (rowPaddingMultiplier * (numR
 
 @interface LetterGrid ()
 
+@property CGSize size;
+@property CGPoint origin;
 @property NSMutableArray *tiles;
 @property LetterTile *spareTile;
 
@@ -32,6 +34,8 @@ static const CGFloat tileHeightMultiplier = (1.0 - (rowPaddingMultiplier * (numR
 - (LetterGrid *)initWithSize:(const CGSize)size {
     self = [super init];
     if (!self) return nil;
+    
+    self.size = size;
     
     SKShapeNode *gridNode = [SKShapeNode shapeNodeWithRectOfSize:size cornerRadius:gridCornerRadius];
     
@@ -55,8 +59,9 @@ static const CGFloat tileHeightMultiplier = (1.0 - (rowPaddingMultiplier * (numR
     const CGFloat tileHeight = tileHeightMultiplier * gridNode.frame.size.height;
     
     // The point at which the bottom-left-most tile will be placed
-    const CGPoint gridOrigin = CGPointMake(gridNode.frame.origin.x + horizontalPadding,
-                                           gridNode.frame.origin.y + verticalPadding);
+    self.origin = CGPointMake(gridNode.frame.origin.x + horizontalPadding,
+                              gridNode.frame.origin.y + verticalPadding);
+    
     
     self.spareTile = [[LetterTile alloc] initWithSize:CGSizeMake(tileWidth, tileHeight) andChar:' '];
     self.spareTile.tileNode.hidden = true;
@@ -67,8 +72,8 @@ static const CGFloat tileHeightMultiplier = (1.0 - (rowPaddingMultiplier * (numR
         for (int j = 0; j < numRows; ++j) {
             LetterTile *tile = [[LetterTile alloc] initWithSize:CGSizeMake(tileWidth, tileHeight)
                                                         andChar:('A' + ((i * 4) + j))];
-            tile.tileNode.position = CGPointMake(gridOrigin.x + (j * (horizontalPadding + tileWidth)),
-                                                 gridOrigin.y + (i * (verticalPadding + tileHeight)));
+            tile.tileNode.position = CGPointMake(self.origin.x + (j * (horizontalPadding + tileWidth)),
+                                                 self.origin.y + (i * (verticalPadding + tileHeight)));
             [self.tiles addObject:tile];
             [cropNode addChild:tile.tileNode];
         }
@@ -77,6 +82,28 @@ static const CGFloat tileHeightMultiplier = (1.0 - (rowPaddingMultiplier * (numR
     _gridNode = gridNode;
     
     return self;
+}
+
+- (NSUInteger)rowAtPoint:(const CGPoint)point {
+    NSUInteger row = 0;
+    while (!(self.origin.y + (row * self.size.height / numRows) <= point.y &&
+             point.y < self.origin.y + ((row + 1) * self.size.height / numRows))) {
+        row++;
+        if (row == numRows) return -1;
+    }
+    
+    return row;
+}
+
+- (NSUInteger)columnAtPoint:(const CGPoint)point {
+    NSUInteger column = 0;
+    while (!(self.origin.x + (column * self.size.width / numColumns) <= point.x &&
+             point.x < self.origin.x + ((column + 1) * self.size.width / numColumns))) {
+        column++;
+        if (column == numColumns) return -1;
+    }
+    
+    return column;
 }
 
 @end

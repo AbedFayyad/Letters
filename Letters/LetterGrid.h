@@ -15,4 +15,7 @@
 
 - (LetterGrid *)initWithSize:(const CGSize)size;
 
+- (NSUInteger)rowAtPoint:(const CGPoint)point;
+- (NSUInteger)columnAtPoint:(const CGPoint)point;
+
 @end
