@@ -23,6 +23,7 @@ static const CGFloat tileHeightMultiplier = (1.0 - (rowPaddingMultiplier * (numR
 @interface LetterGrid ()
 
 @property NSMutableArray *tiles;
+@property LetterTile *spareTile;
 
 @end
 
@@ -38,6 +39,13 @@ static const CGFloat tileHeightMultiplier = (1.0 - (rowPaddingMultiplier * (numR
     gridNode.fillColor = [SKColor lightGrayColor];
     gridNode.strokeColor = [SKColor darkGrayColor];
     
+    SKCropNode *cropNode = [SKCropNode node];
+    SKShapeNode *maskNode = [SKShapeNode shapeNodeWithRectOfSize:CGSizeMake(size.width - 2, size.height - 2)
+                                                    cornerRadius:gridCornerRadius];
+    maskNode.fillColor = [SKColor blackColor];
+    cropNode.maskNode = maskNode;
+    [gridNode addChild:cropNode];
+    
     self.tiles = [NSMutableArray arrayWithCapacity:numRows * numColumns];
     
     // Calculate tile dimensions and padding
@@ -50,6 +58,10 @@ static const CGFloat tileHeightMultiplier = (1.0 - (rowPaddingMultiplier * (numR
     const CGPoint gridOrigin = CGPointMake(gridNode.frame.origin.x + horizontalPadding,
                                            gridNode.frame.origin.y + verticalPadding);
     
+    self.spareTile = [[LetterTile alloc] initWithSize:CGSizeMake(tileWidth, tileHeight) andChar:' '];
+    self.spareTile.tileNode.hidden = true;
+    [cropNode addChild:self.spareTile.tileNode];
+    
     // Distribute the tiles along the grid
     for (int i = 0; i < numColumns; ++i) {
         for (int j = 0; j < numRows; ++j) {
@@ -58,7 +70,7 @@ static const CGFloat tileHeightMultiplier = (1.0 - (rowPaddingMultiplier * (numR
             tile.tileNode.position = CGPointMake(gridOrigin.x + (j * (horizontalPadding + tileWidth)),
                                                  gridOrigin.y + (i * (verticalPadding + tileHeight)));
             [self.tiles addObject:tile];
-            [gridNode addChild:tile.tileNode];
+            [cropNode addChild:tile.tileNode];
         }
     }
     
