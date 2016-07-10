@@ -20,10 +20,13 @@ static const CGFloat rowPaddingMultiplier = 0.1 / (numRows + 1);
 static const CGFloat tileWidthMultiplier = (1.0 - (columnPaddingMultiplier * (numColumns + 1))) / numColumns;
 static const CGFloat tileHeightMultiplier = (1.0 - (rowPaddingMultiplier * (numRows + 1))) / numRows;
 
-@interface LetterGrid ()
+@interface LetterGrid () {
+    CGFloat horizontalPadding, verticalPadding;
+    CGFloat tileWidth, tileHeight;
+    CGPoint tileOrigin;
+}
 
 @property CGSize size;
-@property CGPoint origin;
 @property NSMutableArray *tiles;
 @property LetterTile *spareTile;
 
@@ -53,13 +56,13 @@ static const CGFloat tileHeightMultiplier = (1.0 - (rowPaddingMultiplier * (numR
     self.tiles = [NSMutableArray arrayWithCapacity:numRows * numColumns];
     
     // Calculate tile dimensions and padding
-    const CGFloat horizontalPadding = columnPaddingMultiplier * gridNode.frame.size.width;
-    const CGFloat verticalPadding = rowPaddingMultiplier * gridNode.frame.size.height;
-    const CGFloat tileWidth = tileWidthMultiplier * gridNode.frame.size.width;
-    const CGFloat tileHeight = tileHeightMultiplier * gridNode.frame.size.height;
+    horizontalPadding = columnPaddingMultiplier * gridNode.frame.size.width;
+    verticalPadding = rowPaddingMultiplier * gridNode.frame.size.height;
+    tileWidth = tileWidthMultiplier * gridNode.frame.size.width;
+    tileHeight = tileHeightMultiplier * gridNode.frame.size.height;
     
     // The point at which the bottom-left-most tile will be placed
-    self.origin = CGPointMake(gridNode.frame.origin.x + horizontalPadding,
+    tileOrigin = CGPointMake(gridNode.frame.origin.x + horizontalPadding,
                               gridNode.frame.origin.y + verticalPadding);
     
     
@@ -72,8 +75,8 @@ static const CGFloat tileHeightMultiplier = (1.0 - (rowPaddingMultiplier * (numR
         for (int j = 0; j < numRows; ++j) {
             LetterTile *tile = [[LetterTile alloc] initWithSize:CGSizeMake(tileWidth, tileHeight)
                                                         andChar:('A' + ((i * 4) + j))];
-            tile.tileNode.position = CGPointMake(self.origin.x + (j * (horizontalPadding + tileWidth)),
-                                                 self.origin.y + (i * (verticalPadding + tileHeight)));
+            tile.tileNode.position = CGPointMake(tileOrigin.x + (j * (horizontalPadding + tileWidth)),
+                                                 tileOrigin.y + (i * (verticalPadding + tileHeight)));
             [self.tiles addObject:tile];
             [cropNode addChild:tile.tileNode];
         }
@@ -84,10 +87,11 @@ static const CGFloat tileHeightMultiplier = (1.0 - (rowPaddingMultiplier * (numR
     return self;
 }
 
+// TODO: Use padding and tile dimension values instead of calculating them
 - (NSUInteger)rowAtPoint:(const CGPoint)point {
     NSUInteger row = 0;
-    while (!(self.origin.y + (row * self.size.height / numRows) <= point.y &&
-             point.y < self.origin.y + ((row + 1) * self.size.height / numRows))) {
+    while (!(tileOrigin.y + (row * self.size.height / numRows) <= point.y &&
+             point.y < tileOrigin.y + ((row + 1) * self.size.height / numRows))) {
         row++;
         if (row == numRows) return -1;
     }
@@ -95,15 +99,79 @@ static const CGFloat tileHeightMultiplier = (1.0 - (rowPaddingMultiplier * (numR
     return row;
 }
 
+// TODO: Use padding and tile dimension values instead of calculating them
 - (NSUInteger)columnAtPoint:(const CGPoint)point {
     NSUInteger column = 0;
-    while (!(self.origin.x + (column * self.size.width / numColumns) <= point.x &&
-             point.x < self.origin.x + ((column + 1) * self.size.width / numColumns))) {
+    while (!(tileOrigin.x + (column * self.size.width / numColumns) <= point.x &&
+             point.x < tileOrigin.x + ((column + 1) * self.size.width / numColumns))) {
         column++;
         if (column == numColumns) return -1;
     }
     
     return column;
+}
+
+// TODO: Limitless horizontal scrolling
+- (void)moveRowAtIndex:(NSInteger)row by:(CGFloat)amount {
+    if (row < 0 || row >= numRows) return;
+    
+    for (LetterTile *tile in [self getTilesAtRow:row])
+        tile.tileNode.position = CGPointMake(tile.tileNode.position.x + amount,
+                                             tile.tileNode.position.y);
+}
+
+// TODO: Limitless vertical scrolling
+- (void)moveColumnAtIndex:(NSInteger)column by:(CGFloat)amount {
+    if (column < 0 || column >= numColumns) return;
+    
+    for (LetterTile *tile in [self getTilesAtColumn:column])
+        tile.tileNode.position = CGPointMake(tile.tileNode.position.x,
+                                             tile.tileNode.position.y + amount);
+}
+
+- (NSSet<LetterTile *> *)getTilesAtRow:(NSInteger)row {
+    LetterTile *tiles[numColumns];
+    
+    for (int i = 0; i < numColumns; ++i)
+        tiles[i] = [self.tiles objectAtIndex:(row * numColumns) + i];
+    
+    return [NSSet setWithObjects:tiles count:numColumns];
+}
+
+- (NSSet<LetterTile *> *)getTilesAtColumn:(NSInteger)column {
+    LetterTile *tiles[numRows];
+    
+    for (int i = 0; i < numRows; ++i)
+        tiles[i] = [self.tiles objectAtIndex:(i * numRows) + column];
+    
+    return [NSSet setWithObjects:tiles count:numRows];
+}
+
+- (void)snapTilesToGrid {
+    // All x-coords are at (gridOrigin) + (n * (tileWidth + offsetX))
+    // Take x-coord - (gridOrigin) and round to nearest (tileWidth + offsetX)
+    // All y-coords are at (gridOrigin) + (n * (tileHeight + offsetY))
+    // Take y-coord - (gridOrigin) and round to nearest (tileHeight + offsetY)
+    
+    for (LetterTile *tile in self.tiles) {
+        tile.tileNode.position = [self getTilePositionNearestTo:tile.tileNode.position];
+    }
+}
+
+- (CGPoint)getTilePositionNearestTo:(CGPoint)position {
+    
+    NSInteger column = -numColumns;
+    while (fabsf(tileOrigin.x + column * (tileWidth + horizontalPadding) - position.x) >= (tileWidth + horizontalPadding) / 2) {
+        column++;
+    }
+    
+    NSInteger row = -numRows;
+    while (fabsf(tileOrigin.y + row * (tileHeight + verticalPadding) - position.y) >= (tileHeight + verticalPadding) / 2) {
+        row++;
+    }
+    
+    return CGPointMake(tileOrigin.x + column * (tileWidth + horizontalPadding),
+                       tileOrigin.y + row * (tileHeight + verticalPadding));
 }
 
 @end

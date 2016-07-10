@@ -18,4 +18,8 @@
 - (NSUInteger)rowAtPoint:(const CGPoint)point;
 - (NSUInteger)columnAtPoint:(const CGPoint)point;
 
+- (void)moveRowAtIndex:(NSInteger)row by:(CGFloat)amount;
+- (void)moveColumnAtIndex:(NSInteger)column by:(CGFloat)amount;
+- (void)snapTilesToGrid;
+
 @end
